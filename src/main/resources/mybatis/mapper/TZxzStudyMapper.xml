@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bd.study.repository.TZxzStudyMapper">
+  <resultMap id="BaseResultMap" type="com.bd.study.entitys.model.TZxzStudy">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="items" jdbcType="VARCHAR" property="items" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="plan_begintime" jdbcType="TIMESTAMP" property="planBegintime" />
+    <result column="plan_endtime" jdbcType="TIMESTAMP" property="planEndtime" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="valid_mark" jdbcType="INTEGER" property="validMark" />
+    <result column="plan_status" jdbcType="INTEGER" property="planStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, items, remark, plan_begintime, plan_endtime, createtime, updatetime, valid_mark, plan_status
+  </sql>
+  
+  <!-- 获取当月计划结束的学习计划内容数据(执行中的) -->
+  <select id="findByCurrentMonth" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_zxz_study t
+	WHERE DATE_FORMAT(t.plan_endtime,'%Y%m') = DATE_FORMAT(CURDATE(),'%Y%m')
+    and plan_status = 1
+  </select>
+
+  <!-- 累计计划项 -->
+  <select id="countStudyNumber" resultType="java.lang.Integer">
+    SELECT count(*) FROM t_zxz_study t
+    WHERE valid_mark = 1;
+  </select>
+  
+  <!-- 复合条件查询学习计划列表数据 -->
+  <select id="findByQuery" parameterType="com.bd.study.entitys.model.TZxzStudy" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_zxz_study 
+    <where>
+    	<if test="title != null and title != '' ">
+    		and title like concat('%', #{title,jdbcType=VARCHAR}, '%')
+    	</if>
+    	<if test="items != null and items != '' ">
+    		and items like concat('%', #{items,jdbcType=VARCHAR}, '%')
+    	</if>
+    	<if test="planBegintime != null">
+    		<![CDATA[ and plan_begintime >= #{planBegintime} ]]>
+    	</if>
+    	<if test="planEndtime != null">
+    		<![CDATA[ and plan_endtime <= #{planEndtime} ]]>
+    	</if>
+    	and valid_mark = 1
+    </where>
+    order by plan_begintime
+  </select>
+  
+  <!-- 逻辑删除学习计划 -->
+  <update id="deleteStudyPlan">
+    update t_zxz_study
+    set valid_mark = 0,
+      plan_endtime = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 根据主键查询学习计划 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_zxz_study
+    where valid_mark = 1 and id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_zxz_study
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bd.study.entitys.model.TZxzStudy">
+    insert into t_zxz_study (id, title, items, 
+      remark, plan_begintime, plan_endtime, 
+      createtime, updatetime)
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{items,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{planBegintime,jdbcType=TIMESTAMP}, #{planEndtime,jdbcType=TIMESTAMP}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <!-- 添加学习计划 -->
+  <insert id="insertSelective" parameterType="com.bd.study.entitys.model.TZxzStudy">
+  	<!-- 执行完insert语句后返回数据主键。-->
+  	<selectKey order="AFTER" resultType="java.lang.Long" keyProperty="id" keyColumn="id">
+  		select LAST_INSERT_ID() AS id;
+  	</selectKey>
+    insert into t_zxz_study
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="items != null">
+        items,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="planBegintime != null">
+        plan_begintime,
+      </if>
+      <if test="planEndtime != null">
+        plan_endtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="items != null">
+        #{items,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="planBegintime != null">
+        #{planBegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planEndtime != null">
+        #{planEndtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 批量插入学习计划数据 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+  	insert into t_zxz_study
+	    (title, items, remark, plan_begintime, plan_endtime)
+	    values
+	<foreach collection ="list" item="study" separator =",">
+	    (#{study.title}, #{study.items}, #{study.remark}, #{study.planBegintime}, #{study.planEndtime})
+	</foreach>
+  </insert>
+  
+  <!-- 根据主键修改学习计划信息 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.bd.study.entitys.model.TZxzStudy">
+    update t_zxz_study
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="items != null">
+        items = #{items,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="planBegintime != null">
+        plan_begintime = #{planBegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planEndtime != null">
+        plan_endtime = #{planEndtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planStatus != null">
+        plan_status = #{planStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 更新学习计划状态 -->
+  <update id="updatePlanStatusById">
+    update t_zxz_study
+    set plan_status = #{planStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.bd.study.entitys.model.TZxzStudy">
+    update t_zxz_study
+    set title = #{title,jdbcType=VARCHAR},
+      items = #{items,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      plan_begintime = #{planBegintime,jdbcType=TIMESTAMP},
+      plan_endtime = #{planEndtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 挂起计划 -->
+  <update id="hangStudy" parameterType="java.lang.Long">
+    update t_zxz_study
+    set plan_status = 3, plan_endtime = NOW()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 获取正在执行的计划中，最晚结束的那一条记录 -->
+  <select id="findExecutingStudyOrderByEndtimeDesc" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_zxz_study
+    where plan_status = 1
+    order by plan_endtime desc
+    limit 1
+  </select>
+</mapper>
