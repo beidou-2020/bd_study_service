@@ -155,6 +155,7 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public Integer batchDelete(String idListStr) {
 		// 参数转化
 		List<Long> idList = Arrays.stream(idListStr.split(",")).
