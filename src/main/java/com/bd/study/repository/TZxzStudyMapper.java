@@ -87,5 +87,11 @@ public interface TZxzStudyMapper {
      * @return
      */
     TZxzStudy findExecutingStudyOrderByEndtimeDesc();
+
+    /**
+     * 批量删除计划(逻辑删除)
+     * @return
+     */
+    Integer batchDelete(@Param("list") List<Long> list);
     
 }

@@ -19,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -150,5 +152,17 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 		}
 
 		return tZxzStudyMapper.updateByPrimaryKeySelective(study);
+	}
+
+	@Override
+	public Integer batchDelete(String idListStr) {
+		// 参数转化
+		List<Long> idList = Arrays.stream(idListStr.split(",")).
+				map(id -> Long.parseLong(id)).collect(Collectors.toList());
+
+		if (CollectionUtils.isEmpty(idList)){
+			return 0;
+		}
+		return tZxzStudyMapper.batchDelete(idList);
 	}
 }

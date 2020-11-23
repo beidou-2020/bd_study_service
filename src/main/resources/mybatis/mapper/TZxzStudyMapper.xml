@@ -198,4 +198,14 @@
     order by plan_endtime desc
     limit 1
   </select>
+
+  <!-- 批量删除计划 -->
+  <update id="batchDelete" parameterType="java.util.List">
+    update t_zxz_study
+    set valid_mark=0
+    where id in
+    <foreach collection ="list" item="id" separator ="," open="(" close=")">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

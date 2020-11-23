@@ -104,4 +104,10 @@ public interface ZxzStudyService {
      */
     Integer trunOnStudy(Long id);
 
+    /**
+     * 批量删除计划(逻辑删除)
+     * @return
+     */
+    Integer batchDelete(String idListStr);
+
 }

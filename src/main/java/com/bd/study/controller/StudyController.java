@@ -6,11 +6,13 @@ import com.bd.study.entitys.dto.AddStudyParam;
 import com.bd.study.entitys.dto.ImportStudyParam;
 import com.bd.study.entitys.dto.PageParam;
 import com.bd.study.entitys.dto.UpdateStudyParam;
+import com.bd.study.entitys.enumerate.ResultCode;
 import com.bd.study.entitys.model.TZxzStudy;
 import com.bd.study.entitys.query.StudyQuery;
 import com.bd.study.service.ZxzStudyService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -151,6 +153,22 @@ public class StudyController {
 	public Result trunOnStudy(@PathVariable(name = "id") Long id){
 		Integer result = zxzStudyService.trunOnStudy(id);
 		return Result.ok(result);
+	}
+
+	/**
+	 * 批量删除计划
+	 * @param idListStr
+	 * @return
+	 */
+	@PostMapping("/batchDelete")
+	@ResponseBody
+	public Result batchDelete(@RequestParam(name = "idListStr") String idListStr){
+		// 参数不能为空
+		if (StringUtils.isEmpty(idListStr)){
+			return Result.fail(ResultCode.PARAM_ERROR.code(), ResultCode.PARAM_ERROR.msg());
+		}
+		Integer resultData = zxzStudyService.batchDelete(idListStr);
+		return Result.ok(resultData);
 	}
 	
 	
