@@ -31,7 +31,7 @@ public interface TZxzStudyMapper {
      * @param id
      * @return
      */
-    Integer deleteStudyPlan(@Param("id") Long id);
+    Integer deleteStudyPlan(@Param("id") Long id, @Param("removeUser") Long removeUser);
     
     int deleteByPrimaryKey(Long id);
 

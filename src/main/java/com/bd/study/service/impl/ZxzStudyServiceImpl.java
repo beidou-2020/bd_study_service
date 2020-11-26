@@ -48,7 +48,7 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 		TZxzStudy study = new TZxzStudy();
 		BeanUtil.copyProperties(queryStudy, study);
 		List<TZxzStudy> list = tZxzStudyMapper.findByQuery(study);
-		PageInfo<TZxzStudy> pageInfo = new PageInfo<TZxzStudy>(list);
+		PageInfo<TZxzStudy> pageInfo = new PageInfo<>(list);
 		return pageInfo;
 	}
 
@@ -57,7 +57,9 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	public TZxzStudy deleteStudyPlan(Long id) {
 		TZxzStudy study = tZxzStudyMapper.selectByPrimaryKey(id);
 		if (Objects.nonNull(study)){
-			tZxzStudyMapper.deleteStudyPlan(id);
+			// 获取当前登录的用户ID
+			long currLoginUserId = 1l;
+			tZxzStudyMapper.deleteStudyPlan(id, currLoginUserId);
 			return study;
 		}
 		return null;

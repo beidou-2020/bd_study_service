@@ -12,9 +12,12 @@
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="valid_mark" jdbcType="INTEGER" property="validMark" />
     <result column="plan_status" jdbcType="INTEGER" property="planStatus" />
+    <result column="removetime" jdbcType="TIMESTAMP" property="removetime" />
+    <result column="remove_user" jdbcType="BIGINT" property="removeUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, items, remark, plan_begintime, plan_endtime, createtime, updatetime, valid_mark, plan_status
+    id, title, items, remark, plan_begintime, plan_endtime, createtime, updatetime,
+    valid_mark, plan_status, removetime, remove_user
   </sql>
   
   <!-- 获取当月计划结束的学习计划内容数据(执行中的) -->
@@ -50,7 +53,7 @@
     	<if test="planEndtime != null">
     		<![CDATA[ and plan_endtime <= #{planEndtime} ]]>
     	</if>
-    	and valid_mark = 1
+    	and valid_mark = #{validMark,jdbcType=INTEGER}
     </where>
     order by plan_begintime
   </select>
@@ -59,7 +62,9 @@
   <update id="deleteStudyPlan">
     update t_zxz_study
     set valid_mark = 0,
-      plan_endtime = now()
+      plan_endtime = now(),
+      removetime = now(),
+      remove_user = #{removeUser,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   
