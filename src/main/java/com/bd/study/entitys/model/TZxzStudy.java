@@ -63,6 +63,7 @@ public class TZxzStudy {
     /**
      * 数据删除时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date removetime;
 
     /**

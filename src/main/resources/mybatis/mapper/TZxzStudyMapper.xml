@@ -62,7 +62,6 @@
   <update id="deleteStudyPlan">
     update t_zxz_study
     set valid_mark = 0,
-      plan_endtime = now(),
       removetime = now(),
       remove_user = #{removeUser,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
