@@ -166,6 +166,9 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 		if (CollectionUtils.isEmpty(idList)){
 			return 0;
 		}
-		return tZxzStudyMapper.batchDelete(idList);
+
+		// 获取当前登录的用户ID
+		long currLoginUserId = 1l;
+		return tZxzStudyMapper.batchDelete(idList, currLoginUserId);
 	}
 }

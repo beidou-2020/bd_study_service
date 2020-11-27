@@ -92,6 +92,6 @@ public interface TZxzStudyMapper {
      * 批量删除计划(逻辑删除)
      * @return
      */
-    Integer batchDelete(@Param("list") List<Long> list);
+    Integer batchDelete(@Param("list") List<Long> list, @Param("removeUser") Long removeUser);
     
 }
