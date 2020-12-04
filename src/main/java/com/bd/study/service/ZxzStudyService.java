@@ -73,7 +73,7 @@ public interface ZxzStudyService {
      * @return
      */
     TZxzStudy updateStudyById(UpdateStudyParam param);
-    
+
     /**
      * 获取所有的学习计划
      * @return

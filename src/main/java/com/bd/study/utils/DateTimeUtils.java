@@ -1,8 +1,8 @@
 package com.bd.study.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -10,10 +10,24 @@ import java.util.Objects;
 @Slf4j
 public class DateTimeUtils {
 
-  public static void main(String[] args) {
-	  Date now = new Date();
-	  Date dateAfter = DateTimeUtils.getDateAfter(now, 7);
-	  log.info("7天后的时间：{}", JSONObject.toJSONString(dateAfter));
+	private static final String ymd = "yyyy-MM-dd";
+
+  public static void main(String[] args) throws Exception{
+
+  }
+
+
+	/**
+	 * 格式化时间：返回年月日
+	 * @param date
+	 * @return
+	 * @throws Exception
+	 */
+  public static Date removeDateHms(Long date) throws Exception {
+	  SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ymd);
+	  String format = simpleDateFormat.format(new Date(date));
+	  Date result = simpleDateFormat.parse(format);
+	  return result;
   }
 
 	/**

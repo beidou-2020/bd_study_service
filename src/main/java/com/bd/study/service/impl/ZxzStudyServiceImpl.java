@@ -1,5 +1,6 @@
 package com.bd.study.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bd.study.entitys.dto.AddStudyParam;
 import com.bd.study.entitys.dto.PageParam;
 import com.bd.study.entitys.dto.UpdateStudyParam;
@@ -70,6 +71,13 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	public TZxzStudy addStudyInfo(AddStudyParam param) {
 		TZxzStudy study = new TZxzStudy();
 		BeanUtil.copyProperties(param, study);
+		try{
+			// 按照业务需求处理日期参数
+			study.setPlanBegintime(DateTimeUtils.removeDateHms(param.getPlanBegintime().getTime()));
+			study.setPlanEndtime(DateTimeUtils.removeDateHms(param.getPlanEndtime().getTime()));
+		}catch (Exception ex){
+			log.error("添加学习计划时开始和结束时间参数处理异常，param:{}", JSONObject.toJSONString(param), ex);
+		}
 		tZxzStudyMapper.insertSelective(study);
 		log.info("插入成功后的数据主键为：{}", study.getId());
 		return study;
@@ -85,13 +93,22 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	public TZxzStudy updateStudyById(UpdateStudyParam param) {
 		TZxzStudy study = new TZxzStudy();
 		BeanUtil.copyProperties(param, study);
+		try{
+			// 按照业务需求处理日期参数
+			study.setPlanBegintime(DateTimeUtils.removeDateHms(param.getPlanBegintime().getTime()));
+			study.setPlanEndtime(DateTimeUtils.removeDateHms(param.getPlanEndtime().getTime()));
+		}catch (Exception ex){
+			log.error("添加学习计划时开始和结束时间参数处理异常，param:{}", JSONObject.toJSONString(param), ex);
+		}
 		tZxzStudyMapper.updateByPrimaryKeySelective(study);
 		return study;
 	}
 
 	@Override
 	public List<TZxzStudy> findAll() {
-		return tZxzStudyMapper.findByQuery(new TZxzStudy());
+		TZxzStudy study = new TZxzStudy();
+		study.setValidMark(1);
+		return tZxzStudyMapper.findByQuery(study);
 	}
 
 	@Override
@@ -117,13 +134,19 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	@Override
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public void syncTaskStatus() {
-		List<TZxzStudy> list = tZxzStudyMapper.findByQuery(new TZxzStudy());
-		// 首先过滤掉挂起状态的计划
-		list.stream().filter(item-> PlanStatus.hang.getCode() != item.getPlanStatus()).
-		forEach(item->{
+		TZxzStudy study = new TZxzStudy();
+		study.setValidMark(1);
+		List<TZxzStudy> list = tZxzStudyMapper.findByQuery(study);
+		// 不同步挂起和结束的计划
+		List<TZxzStudy> dealWithStudyList = list.stream().filter(item -> PlanStatus.hang.getCode() != item.getPlanStatus()
+				&& PlanStatus.over.getCode() != item.getPlanStatus()).collect(Collectors.toList());
+
+		dealWithStudyList.stream().forEach(item->{
 			Integer planStatus = DateTimeUtils.datePositioning(new Date(), item.getPlanBegintime(), item.getPlanEndtime());
 			if (!item.getPlanStatus().equals(planStatus)) {
-				this.updatePlanStatusById(item.getId(), planStatus);
+				Integer result = this.updatePlanStatusById(item.getId(), planStatus);
+				log.info("更新学习计划： {}, 的新状态为：{}，更新结果：{}",
+						JSONObject.toJSONString(item), planStatus.intValue(), result.intValue());
 			}
 		});
 	}
