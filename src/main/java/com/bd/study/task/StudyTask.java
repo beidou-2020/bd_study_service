@@ -19,8 +19,8 @@ public class StudyTask {
 	 * 定时更新学习计划的列表状态(每天凌晨1点执行)
 	 */
 	@Async(value = "taskExecutor")
-	//@Scheduled(cron = "0 0 1 * * ? ")				//正式环境：每天凌晨1点
-	@Scheduled(cron = "0 0/1 * * * ? ")				//本地环境：每分钟
+	@Scheduled(cron = "0 0 1 * * ? ")				//正式环境：每天凌晨1点
+	//@Scheduled(cron = "0 0/1 * * * ? ")				//本地环境：每分钟
 	public void updatePlanStatus() {
 		log.info("同步计划状态===begin");
 		zxzStudyService.syncTaskStatus();
