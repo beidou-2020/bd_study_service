@@ -189,7 +189,7 @@
   <!-- 挂起计划 -->
   <update id="hangStudy" parameterType="java.lang.Long">
     update t_zxz_study
-    set plan_status = 3, plan_endtime = NOW()
+    set plan_status = 3
     where id = #{id,jdbcType=BIGINT}
   </update>
 
