@@ -1,4 +1,4 @@
-# 全局配置(测试)
+# 全局配置
 server:
   port: 9091
 spring:

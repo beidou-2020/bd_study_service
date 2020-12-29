@@ -1,5 +1,5 @@
-/src/main/resources/application.yml
-/src/main/resources/logback.xml
+resources/application.yml
+resources/logback.xml
 
 HELP.md
 target/
