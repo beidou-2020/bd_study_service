@@ -3,36 +3,7 @@ server:
   port: 9091
 spring:
   profiles:
-    active: dev
-  application:
-    name: study-service
-  cloud:
-    # sentinel配置项
-    sentinel:
-      transport:
-        dashboard: 127.0.0.1:8181
-      # 取消Sentinel控制台懒加载
-      eager: true
-    # consul配置项
-    consul:
-      discovery:
-        # 启用服务发现(因为当前服务只是服务提供者)
-        # enabled: false
-        # 启用服务注册(本地环境)
-        # 生产环境(false：服务不会注册到注册中心去，正常提供服务)
-        register: false
-        # 服务停止时取消注册
-        deregister: true
-        # 表示注册时使用IP而不是hostname
-        prefer-ip-address: true
-        # 注册成功后的唯一标识
-        instance-id: ${spring.application.name}
-        # 注册成功后的服务名称
-        service-name: ${spring.application.name}
-      host: 127.0.0.1
-      port: 8500
-
-
+    active: prod
 
 # mybatis集成
 mybatis:
