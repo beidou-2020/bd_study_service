@@ -3,8 +3,7 @@ server:
   port: 9091
 spring:
   profiles:
-    # 生产环境
-    active: prod
+    active: dev
   application:
     name: study-service
   cloud:
