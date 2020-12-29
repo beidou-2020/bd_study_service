@@ -16,10 +16,12 @@ spring:
     # consul配置项
     consul:
       discovery:
-        # 启用服务发现
-        enabled: true
-        # 启用服务注册
-        register: true
+        # 启用服务发现(因为当前服务只是服务提供者)
+        enabled: false
+        # 启用服务注册(本地环境)
+        # register: true
+        # 生产环境(false：服务不会注册到注册中心去，正常提供服务)
+        register: false
         # 服务停止时取消注册
         deregister: true
         # 表示注册时使用IP而不是hostname
