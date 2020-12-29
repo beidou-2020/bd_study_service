@@ -1,6 +1,3 @@
-resources/application.yml
-resources/logback.xml
-
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
