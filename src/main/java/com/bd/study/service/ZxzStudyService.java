@@ -44,7 +44,7 @@ public interface ZxzStudyService {
      * @param queryStudy
      * @return
      */
-    List<TZxzStudy> importData(StudyQuery queryStudy);
+    List<TZxzStudy> exportData(StudyQuery queryStudy);
     
     /**
      * 逻辑删除学习计划，计划默认终止

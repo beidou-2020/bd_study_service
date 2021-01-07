@@ -176,10 +176,10 @@ public class StudyController {
 	 * @param query
 	 * @return
 	 */
-	@GetMapping("/importData")
+	@GetMapping("/exportData")
 	@ResponseBody
-	public Result importData(StudyQuery query){
-		List<TZxzStudy> list = zxzStudyService.importData(query);
+	public Result exportData(StudyQuery query){
+		List<TZxzStudy> list = zxzStudyService.exportData(query);
 		return Result.ok(list);
 	}
 	

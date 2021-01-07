@@ -54,7 +54,7 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	}
 
 	@Override
-	public List<TZxzStudy> importData(StudyQuery queryStudy) {
+	public List<TZxzStudy> exportData(StudyQuery queryStudy) {
 		TZxzStudy study = new TZxzStudy();
 		BeanUtil.copyProperties(queryStudy, study);
 		return tZxzStudyMapper.findByQuery(study);
