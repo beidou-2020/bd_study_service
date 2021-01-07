@@ -54,6 +54,13 @@ public class ZxzStudyServiceImpl implements ZxzStudyService {
 	}
 
 	@Override
+	public List<TZxzStudy> importData(StudyQuery queryStudy) {
+		TZxzStudy study = new TZxzStudy();
+		BeanUtil.copyProperties(queryStudy, study);
+		return tZxzStudyMapper.findByQuery(study);
+	}
+
+	@Override
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public TZxzStudy deleteStudyPlan(Long id) {
 		TZxzStudy study = tZxzStudyMapper.selectByPrimaryKey(id);

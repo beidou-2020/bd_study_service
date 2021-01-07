@@ -38,6 +38,13 @@ public interface ZxzStudyService {
      * @return
      */
     PageInfo<TZxzStudy> pageFindByQuery(StudyQuery queryStudy, PageParam pageQuery);
+
+    /**
+     * 导出学习计划列表
+     * @param queryStudy
+     * @return
+     */
+    List<TZxzStudy> importData(StudyQuery queryStudy);
     
     /**
      * 逻辑删除学习计划，计划默认终止

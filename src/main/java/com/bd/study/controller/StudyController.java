@@ -170,6 +170,18 @@ public class StudyController {
 		Integer resultData = zxzStudyService.batchDelete(idListStr);
 		return Result.ok(resultData);
 	}
+
+	/**
+	 * 导出学习计划列表
+	 * @param query
+	 * @return
+	 */
+	@GetMapping("/importData")
+	@ResponseBody
+	public Result importData(StudyQuery query){
+		List<TZxzStudy> list = zxzStudyService.importData(query);
+		return Result.ok(list);
+	}
 	
 	
 	
